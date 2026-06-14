@@ -249,10 +249,10 @@ export default function AttendancePage() {
             <div>
               <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Mark All As</p>
               <div className="flex gap-2">
-                {(["P", "HD", "A", "H"] as const).map(s => (
+                {(["P", "HD", "A", "H"] as const).map(st => (
                   <button
-                    key={s}
-                    onClick={() => markAll(s)}
+                    key={st}
+                    onClick={() => setStatus(s.id, st)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-semibold border transition hover:opacity-80
                       ${STATUS_CONFIG[s].border} ${STATUS_CONFIG[s].text} ${STATUS_CONFIG[s].light}`}
                   >
