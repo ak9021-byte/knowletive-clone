@@ -89,18 +89,18 @@ export default function AnalyticsPage() {
     avg >= 80 ? "text-green-600" : avg >= 50 ? "text-orange-500" : "text-red-500";
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
 
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">📊 Performance Analytics</h1>
+      <div className="mb-5 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">📊 Performance Analytics</h1>
         <p className="text-sm text-gray-400 mt-1">Average scores and category breakdown per student</p>
       </div>
 
       {/* Time Filter */}
-      <div className="bg-white rounded-2xl shadow-sm px-5 py-4 mb-5 flex items-center gap-3 flex-wrap">
+      <div className="bg-white rounded-2xl shadow-sm px-4 sm:px-5 py-4 mb-5 flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
         <span className="text-sm text-gray-500 font-medium">Show averages for last:</span>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {DAY_OPTIONS.map(d => (
             <button
               key={d}
@@ -114,7 +114,7 @@ export default function AnalyticsPage() {
             </button>
           ))}
         </div>
-        <div className="ml-auto flex gap-2">
+        <div className="flex gap-2 sm:ml-auto">
           <input
             type="number"
             min={1} max={365}
@@ -133,21 +133,27 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-2xl p-5 border-t-4 border-indigo-500 shadow-sm">
-          <div className="text-3xl mb-2">👥</div>
-          <p className="text-4xl font-bold text-indigo-600">{data?.total_students ?? "—"}</p>
-          <p className="text-sm text-gray-400 mt-1">Total Students</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="bg-white rounded-2xl p-5 border-t-4 border-indigo-500 shadow-sm flex sm:block items-center gap-4">
+          <div className="text-3xl sm:mb-2">👥</div>
+          <div>
+            <p className="text-4xl font-bold text-indigo-600">{data?.total_students ?? "—"}</p>
+            <p className="text-sm text-gray-400 mt-1">Total Students</p>
+          </div>
         </div>
-        <div className="bg-white rounded-2xl p-5 border-t-4 border-green-500 shadow-sm">
-          <div className="text-3xl mb-2">✅</div>
-          <p className="text-4xl font-bold text-green-600">{data?.active_students ?? "—"}</p>
-          <p className="text-sm text-gray-400 mt-1">Active Students</p>
+        <div className="bg-white rounded-2xl p-5 border-t-4 border-green-500 shadow-sm flex sm:block items-center gap-4">
+          <div className="text-3xl sm:mb-2">✅</div>
+          <div>
+            <p className="text-4xl font-bold text-green-600">{data?.active_students ?? "—"}</p>
+            <p className="text-sm text-gray-400 mt-1">Active Students</p>
+          </div>
         </div>
-        <div className="bg-white rounded-2xl p-5 border-t-4 border-orange-400 shadow-sm">
-          <div className="text-3xl mb-2">📈</div>
-          <p className="text-4xl font-bold text-orange-500">{data?.class_avg ?? "—"}</p>
-          <p className="text-sm text-gray-400 mt-1">Class Avg ({days}d)</p>
+        <div className="bg-white rounded-2xl p-5 border-t-4 border-orange-400 shadow-sm flex sm:block items-center gap-4">
+          <div className="text-3xl sm:mb-2">📈</div>
+          <div>
+            <p className="text-4xl font-bold text-orange-500">{data?.class_avg ?? "—"}</p>
+            <p className="text-sm text-gray-400 mt-1">Class Avg ({days}d)</p>
+          </div>
         </div>
       </div>
 
@@ -188,46 +194,52 @@ export default function AnalyticsPage() {
                 {/* Student Row */}
                 <button
                   onClick={() => setExpanded(isOpen ? null : s.student_id)}
-                  className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition text-left"
+                  className="w-full flex items-center justify-between p-4 sm:p-5 hover:bg-gray-50 transition text-left gap-3"
                 >
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                     {/* Avatar */}
                     {s.photo_url ? (
-                      <img src={s.photo_url} className="w-12 h-12 rounded-xl object-cover" />
+                      <img src={s.photo_url} className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover flex-shrink-0" />
                     ) : (
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg"
-                        style={{ backgroundColor: `hsl(${(s.student_id * 47) % 360}, 60%, 55%)` }}>
+                      <div
+                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex-shrink-0 flex items-center justify-center text-white font-bold text-base sm:text-lg"
+                        style={{ backgroundColor: `hsl(${(s.student_id * 47) % 360}, 60%, 55%)` }}
+                      >
                         {s.student_name.charAt(0)}
                       </div>
                     )}
 
                     {/* Info */}
-                    <div>
-                      <p className="font-semibold text-gray-800 text-base">{s.student_name}</p>
-                      <p className="text-xs text-gray-400">{s.student_email}</p>
-                      <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-800 text-sm sm:text-base truncate">{s.student_name}</p>
+                      <p className="text-xs text-gray-400 truncate">{s.student_email}</p>
+                      <div className="flex items-center gap-1.5 sm:gap-2 mt-1 flex-wrap">
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${LEVEL_STYLE[s.level]}`}>
                           {LEVEL_EMOJI[s.level]} {s.level}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-400 hidden sm:inline">
                           📅 {s.sessions} session{s.sessions !== 1 ? "s" : ""} in {days}d
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-400 hidden sm:inline">
                           {s.streak > 0 ? `🔥 ${s.streak}-day streak` : "No streak yet"}
+                        </span>
+                        {/* Compact mobile-only session/streak line */}
+                        <span className="text-xs text-gray-400 sm:hidden">
+                          📅 {s.sessions}d {s.streak > 0 ? `· 🔥${s.streak}` : ""}
                         </span>
                       </div>
                     </div>
                   </div>
 
                   {/* Score + chevron */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
                     <div className="text-right">
-                      <p className={`text-3xl font-bold ${avgColor(s.avg_score)}`}>
+                      <p className={`text-2xl sm:text-3xl font-bold ${avgColor(s.avg_score)}`}>
                         {s.avg_score}
                       </p>
                       <p className="text-xs text-gray-400">avg / 100</p>
                       {/* Mini bar */}
-                      <div className="w-24 bg-gray-100 rounded-full h-1 mt-1">
+                      <div className="w-16 sm:w-24 bg-gray-100 rounded-full h-1 mt-1">
                         <div
                           className={`h-1 rounded-full ${
                             s.avg_score >= 80 ? "bg-green-500" :
@@ -237,17 +249,17 @@ export default function AnalyticsPage() {
                         />
                       </div>
                     </div>
-                    <span className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""}`}>▼</span>
+                    <span className={`text-gray-400 transition-transform text-sm ${isOpen ? "rotate-180" : ""}`}>▼</span>
                   </div>
                 </button>
 
                 {/* Category Breakdown — expanded */}
                 {isOpen && (
-                  <div className="px-5 pb-5 border-t border-gray-100">
+                  <div className="px-4 sm:px-5 pb-5 border-t border-gray-100">
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-4 mb-4">
                       Category Breakdown — {days} Day Average
                     </p>
-                    <div className="grid grid-cols-3 gap-x-8 gap-y-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
                       {Object.entries(s.categories).map(([cat, stat]) => {
                         const meta = CATEGORY_META[cat] ?? { emoji: "📌", color: "text-gray-600", bar: "bg-gray-400" };
                         return (

@@ -97,7 +97,6 @@ export default function AttendancePage() {
   const [saved, setSaved]       = useState(false);
   const [loading, setLoading]   = useState(true);
 
-  // Load students once
   useEffect(() => {
     if (!faculty) return;
     api.get(`/students/?faculty_id=${faculty.id}`).then(r => {
@@ -106,7 +105,6 @@ export default function AttendancePage() {
     });
   }, []);
 
-  // Load existing attendance when date changes
   useEffect(() => {
     if (!faculty || view !== "mark") return;
     api
@@ -119,7 +117,6 @@ export default function AttendancePage() {
       .catch(() => {});
   }, [date, view]);
 
-  // Load summary
   const loadSummary = useCallback(() => {
     if (!faculty) return;
     api
@@ -164,12 +161,12 @@ export default function AttendancePage() {
   const markedCount = students.filter(s => s.status).length;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">✅ Attendance Tracker</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">✅ Attendance Tracker</h1>
           <p className="text-sm text-gray-400 mt-0.5">
             90-day course · Data synced across all devices
           </p>
@@ -177,7 +174,7 @@ export default function AttendancePage() {
         <div className="flex gap-2">
           <button
             onClick={() => setView("mark")}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold border transition
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-semibold border transition
               ${view === "mark"
                 ? "bg-indigo-600 text-white border-indigo-600"
                 : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}
@@ -186,7 +183,7 @@ export default function AttendancePage() {
           </button>
           <button
             onClick={() => setView("summary")}
-            className={`px-4 py-2 rounded-lg text-sm font-semibold border transition
+            className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-semibold border transition
               ${view === "summary"
                 ? "bg-indigo-600 text-white border-indigo-600"
                 : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}
@@ -197,58 +194,67 @@ export default function AttendancePage() {
       </div>
 
       {/* ── Legend ── */}
-      <div className="flex gap-4 mb-5 text-xs text-gray-500">
+      <div className="flex gap-2 sm:gap-4 mb-5 flex-wrap">
         {Object.entries(STATUS_CONFIG).map(([k, v]) => (
-          <span key={k} className="flex items-center gap-1">
+          <span key={k} className="flex items-center gap-1 text-xs text-gray-500">
             <span className={`w-5 h-5 rounded text-white flex items-center justify-center font-bold text-xs ${v.bg}`}>
               {v.label}
             </span>
-            {v.full}{k === "P" ? " (1.0)" : k === "HD" ? " (0.5)" : k === "A" ? " (0.0)" : ""}
+            <span className="hidden sm:inline">
+              {v.full}{k === "P" ? " (1.0)" : k === "HD" ? " (0.5)" : k === "A" ? " (0.0)" : ""}
+            </span>
+            <span className="sm:hidden">{v.full}</span>
           </span>
         ))}
       </div>
 
       {/* ── Stats Cards ── */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-white rounded-2xl p-5 border-t-4 border-indigo-500 shadow-sm">
-          <div className="text-2xl mb-1">👥</div>
-          <p className="text-3xl font-bold text-indigo-600">{students.length}</p>
-          <p className="text-sm text-gray-400 mt-1">Total Students</p>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div className="bg-white rounded-2xl p-5 border-t-4 border-indigo-500 shadow-sm flex sm:block items-center gap-4">
+          <div className="text-2xl sm:mb-1">👥</div>
+          <div>
+            <p className="text-3xl font-bold text-indigo-600">{students.length}</p>
+            <p className="text-sm text-gray-400 mt-1">Total Students</p>
+          </div>
         </div>
-        <div className="bg-white rounded-2xl p-5 border-t-4 border-green-500 shadow-sm">
-          <div className="text-2xl mb-1">📅</div>
-          <p className="text-3xl font-bold text-green-600">
-            {summary?.days_marked ?? "—"} / 90
-          </p>
-          <p className="text-sm text-gray-400 mt-1">Days Marked</p>
+        <div className="bg-white rounded-2xl p-5 border-t-4 border-green-500 shadow-sm flex sm:block items-center gap-4">
+          <div className="text-2xl sm:mb-1">📅</div>
+          <div>
+            <p className="text-3xl font-bold text-green-600">
+              {summary?.days_marked ?? "—"} / 90
+            </p>
+            <p className="text-sm text-gray-400 mt-1">Days Marked</p>
+          </div>
         </div>
-        <div className="bg-white rounded-2xl p-5 border-t-4 border-orange-400 shadow-sm">
-          <div className="text-2xl mb-1">📈</div>
-          <p className="text-3xl font-bold text-orange-500">
-            {summary?.avg_attendance ?? "—"}%
-          </p>
-          <p className="text-sm text-gray-400 mt-1">Avg Attendance</p>
+        <div className="bg-white rounded-2xl p-5 border-t-4 border-orange-400 shadow-sm flex sm:block items-center gap-4">
+          <div className="text-2xl sm:mb-1">📈</div>
+          <div>
+            <p className="text-3xl font-bold text-orange-500">
+              {summary?.avg_attendance ?? "—"}%
+            </p>
+            <p className="text-sm text-gray-400 mt-1">Avg Attendance</p>
+          </div>
         </div>
       </div>
 
       {/* ══ MARK VIEW ══ */}
       {view === "mark" && (
-        <div className="bg-white rounded-2xl shadow-sm p-5">
+        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-5">
 
           {/* Date + Mark All */}
-          <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div>
               <label className="text-xs font-semibold text-gray-500 uppercase">Date</label>
               <input
                 type="date"
                 value={date}
                 onChange={e => setDate(e.target.value)}
-                className="block mt-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                className="block mt-1 w-full sm:w-auto border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
               />
             </div>
             <div>
               <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Mark All As</p>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 sm:flex gap-2">
                 {(["P", "HD", "A", "H"] as const).map(opt => (
                   <button
                     key={opt}
@@ -275,7 +281,7 @@ export default function AttendancePage() {
             className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-200"
           />
 
-          {/* Loading */}
+          {/* Student List */}
           {loading ? (
             <div className="py-12 text-center text-gray-400 text-sm">Loading students...</div>
           ) : filtered.length === 0 ? (
@@ -285,19 +291,14 @@ export default function AttendancePage() {
               {filtered.map(s => (
                 <div
                   key={s.id}
-                  className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:bg-gray-50 transition"
+                  className="flex items-center justify-between p-3 rounded-xl border border-gray-100 hover:bg-gray-50 transition gap-2"
                 >
                   {/* Avatar + Name */}
-                  <div className="flex items-center gap-3">
-                    <Avatar
-                      name={s.name}
-                      photo_url={s.photo_url}
-                      size={44}
-                      id={s.id}
-                    />
-                    <div>
-                      <p className="text-sm font-semibold text-gray-800">{s.name}</p>
-                      <p className="text-xs text-gray-400">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <Avatar name={s.name} photo_url={s.photo_url} size={40} id={s.id} />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-gray-800 truncate">{s.name}</p>
+                      <p className="text-xs text-gray-400 hidden sm:block">
                         {s.status
                           ? `Marked: ${STATUS_CONFIG[s.status as keyof typeof STATUS_CONFIG]?.full}`
                           : "Not marked yet"}
@@ -306,12 +307,12 @@ export default function AttendancePage() {
                   </div>
 
                   {/* P / HD / A / H buttons */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
                     {(["P", "HD", "A", "H"] as const).map(st => (
                       <button
                         key={st}
                         onClick={() => setStatus(s.id, st)}
-                        className={`w-10 h-10 rounded-lg text-xs font-bold border-2 transition
+                        className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg text-xs font-bold border-2 transition
                           ${s.status === st
                             ? `${STATUS_CONFIG[st].bg} text-white border-transparent`
                             : `bg-white ${STATUS_CONFIG[st].text} ${STATUS_CONFIG[st].border} opacity-70 hover:opacity-100`
@@ -331,12 +332,12 @@ export default function AttendancePage() {
             <button
               onClick={handleSave}
               disabled={saving || markedCount === 0}
-              className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-3 rounded-xl font-semibold transition"
+              className="flex-1 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white py-3 rounded-xl font-semibold transition text-sm sm:text-base"
             >
               {saving ? "Saving..." : `💾 Save Attendance (${markedCount} students)`}
             </button>
             {saved && (
-              <span className="text-green-600 font-semibold text-sm">✅ Saved!</span>
+              <span className="text-green-600 font-semibold text-sm whitespace-nowrap">✅ Saved!</span>
             )}
           </div>
         </div>
@@ -344,7 +345,7 @@ export default function AttendancePage() {
 
       {/* ══ SUMMARY VIEW ══ */}
       {view === "summary" && (
-        <div className="bg-white rounded-2xl shadow-sm p-5">
+        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-5">
 
           {/* Search */}
           <input
@@ -371,19 +372,19 @@ export default function AttendancePage() {
                 )
                 .sort((a, b) => b.percentage - a.percentage)
                 .map(s => (
-                  <div key={s.student_id} className="border border-gray-100 rounded-xl p-4">
+                  <div key={s.student_id} className="border border-gray-100 rounded-xl p-3 sm:p-4">
 
                     {/* Row: avatar + name + percentage */}
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between mb-3 gap-2">
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                         <Avatar
                           name={s.student_name}
                           photo_url={s.photo_url}
-                          size={44}
+                          size={40}
                           id={s.student_id}
                         />
-                        <div>
-                          <p className="text-sm font-semibold text-gray-800">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-gray-800 truncate">
                             {s.student_name}
                           </p>
                           <p className="text-xs text-gray-400">
@@ -391,7 +392,7 @@ export default function AttendancePage() {
                           </p>
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right flex-shrink-0">
                         <p className={`text-xl font-bold ${pctColor(s.percentage)}`}>
                           {s.percentage}%
                         </p>

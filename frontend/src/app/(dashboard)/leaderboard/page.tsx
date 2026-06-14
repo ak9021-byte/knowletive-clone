@@ -22,12 +22,12 @@ export default function LeaderboardPage() {
   const getName = (id: number) =>
     students.find(s => s.id === id)?.name || `Student #${id}`;
 
-  const medals = ["🥇","🥈","🥉"];
+  const medals = ["🥇", "🥈", "🥉"];
 
   return (
-    <div>
+    <div className="p-4 sm:p-6">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">🏆 Leaderboard</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800">🏆 Leaderboard</h1>
         <p className="text-gray-500 text-sm mt-1">Rankings based on total scores</p>
       </div>
 
@@ -38,35 +38,58 @@ export default function LeaderboardPage() {
             <p>No scores yet. Start entering scores!</p>
           </div>
         ) : (
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>
-                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Rank</th>
-                <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Student</th>
-                <th className="text-right px-6 py-4 text-sm font-semibold text-gray-600">Total Score</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, i) => (
-                <tr key={row.student_id} className="border-b border-gray-50 hover:bg-gray-50">
-                  <td className="px-6 py-4 text-xl">
-                    {medals[i] || `#${i + 1}`}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold">
-                        {getName(row.student_id).charAt(0)}
-                      </div>
-                      <span className="font-medium text-gray-800">{getName(row.student_id)}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className="font-bold text-indigo-600 text-lg">{row.total_score}</span>
-                  </td>
+          <>
+            {/* Desktop table */}
+            <table className="w-full hidden sm:table">
+              <thead className="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Rank</th>
+                  <th className="text-left px-6 py-4 text-sm font-semibold text-gray-600">Student</th>
+                  <th className="text-right px-6 py-4 text-sm font-semibold text-gray-600">Total Score</th>
                 </tr>
+              </thead>
+              <tbody>
+                {data.map((row, i) => (
+                  <tr key={row.student_id} className="border-b border-gray-50 hover:bg-gray-50">
+                    <td className="px-6 py-4 text-xl">
+                      {medals[i] || `#${i + 1}`}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold flex-shrink-0">
+                          {getName(row.student_id).charAt(0)}
+                        </div>
+                        <span className="font-medium text-gray-800">{getName(row.student_id)}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <span className="font-bold text-indigo-600 text-lg">{row.total_score}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Mobile card list */}
+            <div className="sm:hidden divide-y divide-gray-50">
+              {data.map((row, i) => (
+                <div key={row.student_id} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50">
+                  <span className="text-xl w-8 text-center flex-shrink-0">
+                    {medals[i] || <span className="text-sm font-bold text-gray-400">#{i + 1}</span>}
+                  </span>
+                  <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold flex-shrink-0">
+                    {getName(row.student_id).charAt(0)}
+                  </div>
+                  <span className="font-medium text-gray-800 flex-1 truncate">
+                    {getName(row.student_id)}
+                  </span>
+                  <span className="font-bold text-indigo-600 text-lg flex-shrink-0">
+                    {row.total_score}
+                  </span>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
     </div>
