@@ -16,6 +16,7 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [faculty, setFaculty] = useState<{ name: string } | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -23,140 +24,167 @@ export default function Sidebar() {
     if (f) setFaculty(JSON.parse(f));
   }, []);
 
-  // Close sidebar on route change (mobile)
   useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
-  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => { setOpen(false); }, [pathname]);
+
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    document.body.style.overflow = (isMobile && open) ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
-  }, [open]);
+  }, [isMobile, open]);
 
   const initials = faculty?.name
     ? faculty.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
     : "FA";
 
-  const sidebarContent = (
-    <aside className="w-[240px] min-w-[240px] min-h-screen bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
-
-      {/* ── Logo ── */}
-      <div className="px-5 pt-6 pb-5 border-b border-gray-100">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-md">
-            <span className="text-3xl">📚</span>
+  const sidebarInner = (
+    <aside style={{
+      width: 240, minWidth: 240, minHeight: "100vh",
+      background: "#fff", borderRight: "1px solid #e5e7eb",
+      display: "flex", flexDirection: "column", flexShrink: 0,
+    }}>
+      {/* Logo */}
+      <div style={{ padding: "24px 20px 20px", borderBottom: "1px solid #f3f4f6" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+          <div style={{
+            width: 56, height: 56, borderRadius: 16,
+            background: "linear-gradient(135deg,#6366f1,#9333ea)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0, boxShadow: "0 4px 12px rgba(99,102,241,0.3)",
+          }}>
+            <span style={{ fontSize: 28 }}>📚</span>
           </div>
           <div>
-            <h1 className="text-[22px] font-extrabold text-gray-900 leading-none mb-1">
+            <h1 style={{ fontSize: 20, fontWeight: 800, color: "#111827", margin: 0, lineHeight: 1 }}>
               Knowletive
             </h1>
-            <p className="text-[11px] text-gray-400 leading-tight">
+            <p style={{ fontSize: 11, color: "#9ca3af", margin: "4px 0 0", lineHeight: 1.3 }}>
               Training Minds, Placing Talents
             </p>
           </div>
         </div>
-        <span className="inline-block text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">
+        <span style={{ fontSize: 10, fontWeight: 700, color: "#6366f1", letterSpacing: "0.1em", textTransform: "uppercase" }}>
           Faculty Portal
         </span>
       </div>
 
-      {/* ── Navigation ── */}
-      <nav className="flex-1 px-4 py-5">
-        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-3">
+      {/* Nav */}
+      <nav style={{ flex: 1, padding: "20px 16px" }}>
+        <p style={{ fontSize: 11, fontWeight: 700, color: "#9ca3af", letterSpacing: "0.1em", textTransform: "uppercase", padding: "0 8px", marginBottom: 12 }}>
           Navigation
         </p>
         {navItems.map(({ href, label, emoji }) => {
           const active = pathname === href;
           return (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-3 px-3 py-3 rounded-xl mb-1 transition-all
-                ${active
-                  ? "bg-indigo-50 text-indigo-700 font-semibold"
-                  : "text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900"
-                }`}
-            >
-              <span className="text-lg w-6 text-center leading-none">{emoji}</span>
-              <span className="text-[15px]">{label}</span>
+            <Link key={href} href={href} style={{
+              display: "flex", alignItems: "center", gap: 12,
+              padding: "10px 12px", borderRadius: 12, marginBottom: 4,
+              textDecoration: "none", transition: "all 0.15s",
+              background: active ? "#eef2ff" : "transparent",
+              color: active ? "#4338ca" : "#4b5563",
+              fontWeight: active ? 600 : 500,
+            }}>
+              <span style={{ fontSize: 18, width: 24, textAlign: "center", lineHeight: 1 }}>{emoji}</span>
+              <span style={{ fontSize: 15 }}>{label}</span>
               {active && (
-                <span className="ml-auto w-2 h-2 rounded-full bg-indigo-500" />
+                <span style={{ marginLeft: "auto", width: 8, height: 8, borderRadius: "50%", background: "#6366f1" }} />
               )}
             </Link>
           );
         })}
       </nav>
 
-      {/* ── Footer ── */}
-      <div className="px-4 pb-5 pt-4 border-t border-gray-100 flex flex-col gap-3">
-        <div className="flex items-center gap-3 px-3 py-3 bg-indigo-50 border border-indigo-100 rounded-xl">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+      {/* Footer */}
+      <div style={{ padding: "16px", borderTop: "1px solid #f3f4f6", display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{
+          display: "flex", alignItems: "center", gap: 12,
+          padding: "12px", background: "#eef2ff", border: "1px solid #e0e7ff", borderRadius: 12,
+        }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: 10,
+            background: "#4f46e5", display: "flex", alignItems: "center",
+            justifyContent: "center", color: "#fff", fontWeight: 700, fontSize: 14, flexShrink: 0,
+          }}>
             {initials}
           </div>
-          <div className="min-w-0">
-            <p className="text-[15px] font-semibold text-gray-800 truncate">
+          <div style={{ minWidth: 0 }}>
+            <p style={{ fontSize: 15, fontWeight: 600, color: "#1f2937", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {faculty?.name ?? "Faculty"}
             </p>
-            <p className="text-xs text-gray-400">Instructor</p>
+            <p style={{ fontSize: 12, color: "#9ca3af", margin: 0 }}>Instructor</p>
           </div>
         </div>
-        <button
-          onClick={logout}
-          className="w-full text-[14px] font-medium text-red-500 border border-red-200 bg-red-50 rounded-xl py-2.5 hover:bg-red-100 transition"
-        >
+        <button onClick={logout} style={{
+          width: "100%", fontSize: 14, fontWeight: 500, color: "#ef4444",
+          border: "1px solid #fecaca", background: "#fff1f2", borderRadius: 12,
+          padding: "10px", cursor: "pointer",
+        }}>
           🚪 Sign out
         </button>
       </div>
     </aside>
   );
 
+  if (!isMobile) return sidebarInner;
+
   return (
     <>
-      {/* ── Desktop: always visible ── */}
-      <div className="hidden lg:flex">
-        {sidebarContent}
-      </div>
-
-      {/* ── Mobile: hamburger button ── */}
+      {/* Hamburger */}
       <button
         onClick={() => setOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white border border-gray-200 rounded-xl shadow-md flex items-center justify-center"
+        style={{
+          position: "fixed", top: 12, left: 12, zIndex: 100,
+          width: 44, height: 44, background: "#fff",
+          border: "1px solid #e5e7eb", borderRadius: 12,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          cursor: "pointer",
+        }}
         aria-label="Open menu"
       >
-        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg width="22" height="22" fill="none" stroke="#374151" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
             d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
-      {/* ── Mobile: backdrop ── */}
+      {/* Backdrop */}
       {open && (
-        <div
-          className="lg:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-        />
+        <div onClick={() => setOpen(false)} style={{
+          position: "fixed", inset: 0, zIndex: 200,
+          background: "rgba(0,0,0,0.45)", backdropFilter: "blur(3px)",
+        }} />
       )}
 
-      {/* ── Mobile: slide-in drawer ── */}
-      <div
-        className={`lg:hidden fixed top-0 left-0 z-50 h-full transform transition-transform duration-300 ease-in-out
-          ${open ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        {/* Close button inside drawer */}
-        <div className="relative">
-          <button
-            onClick={() => setOpen(false)}
-            className="absolute top-4 right-[-48px] w-10 h-10 bg-white border border-gray-200 rounded-xl shadow-md flex items-center justify-center z-10"
-            aria-label="Close menu"
-          >
-            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
-                d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-          {sidebarContent}
-        </div>
+      {/* Drawer */}
+      <div style={{
+        position: "fixed", top: 0, left: 0, zIndex: 300, height: "100%",
+        transform: open ? "translateX(0)" : "translateX(-100%)",
+        transition: "transform 0.3s ease",
+      }}>
+        <button
+          onClick={() => setOpen(false)}
+          style={{
+            position: "absolute", top: 12, right: -52, zIndex: 10,
+            width: 44, height: 44, background: "#fff",
+            border: "1px solid #e5e7eb", borderRadius: 12,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer",
+          }}
+          aria-label="Close menu"
+        >
+          <svg width="18" height="18" fill="none" stroke="#374151" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+              d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        {sidebarInner}
       </div>
     </>
   );
