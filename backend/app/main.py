@@ -25,7 +25,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://YOUR-APP-NAME.vercel.app",  # update after Vercel deploy
+        "https://knowletive-clone-o5cqizz99-akash-gaikwad-s-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
