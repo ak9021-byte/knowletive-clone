@@ -19,7 +19,7 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <main className="flex-1 overflow-auto" style={{ paddingTop: 56 }}>
+      <main className="flex-1 overflow-auto w-full pt-14 lg:pt-0">
         {children}
       </main>
     </div>
