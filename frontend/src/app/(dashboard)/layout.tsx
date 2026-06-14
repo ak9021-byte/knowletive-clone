@@ -19,8 +19,9 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      {/* pt-16 on mobile gives room for the hamburger button, removed on lg */}
-      <main className="flex-1 overflow-auto pt-16 lg:pt-0">{children}</main>
+      <main className="flex-1 overflow-auto" style={{ paddingTop: 56 }}>
+        {children}
+      </main>
     </div>
   );
 }

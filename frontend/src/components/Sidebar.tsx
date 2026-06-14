@@ -17,6 +17,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [faculty, setFaculty] = useState<{ name: string } | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -25,6 +26,7 @@ export default function Sidebar() {
   }, []);
 
   useEffect(() => {
+    setMounted(true);
     const check = () => setIsMobile(window.innerWidth < 1024);
     check();
     window.addEventListener("resize", check);
@@ -130,11 +132,16 @@ export default function Sidebar() {
     </aside>
   );
 
+  // Don't render anything until JS has hydrated
+  if (!mounted) return null;
+
+  // Desktop: always show sidebar
   if (!isMobile) return sidebarInner;
 
+  // Mobile: hamburger + slide drawer
   return (
     <>
-      {/* Hamburger */}
+      {/* Hamburger button */}
       <button
         onClick={() => setOpen(true)}
         style={{
@@ -161,12 +168,13 @@ export default function Sidebar() {
         }} />
       )}
 
-      {/* Drawer */}
+      {/* Slide-in drawer */}
       <div style={{
         position: "fixed", top: 0, left: 0, zIndex: 300, height: "100%",
         transform: open ? "translateX(0)" : "translateX(-100%)",
         transition: "transform 0.3s ease",
       }}>
+        {/* Close button */}
         <button
           onClick={() => setOpen(false)}
           style={{
