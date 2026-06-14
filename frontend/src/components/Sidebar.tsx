@@ -5,28 +5,40 @@ import { logout } from "@/lib/auth";
 import { useState, useEffect } from "react";
 
 const navItems = [
-  { href: "/dashboard",   label: "Dashboard",   emoji: "🏠" },
-  { href: "/score-entry", label: "Score Entry",  emoji: "📝" },
-  { href: "/students",    label: "Students",     emoji: "👥" },
-  { href: "/leaderboard", label: "Leaderboard",  emoji: "🏆" },
-  { href: "/analytics",   label: "Analytics",    emoji: "📊" },
-  { href: "/attendance",  label: "Attendance",   emoji: "✅" },
+  { href: "/dashboard",   label: "Dashboard",  emoji: "🏠" },
+  { href: "/score-entry", label: "Score Entry", emoji: "📝" },
+  { href: "/students",    label: "Students",    emoji: "👥" },
+  { href: "/leaderboard", label: "Leaderboard", emoji: "🏆" },
+  { href: "/analytics",   label: "Analytics",   emoji: "📊" },
+  { href: "/attendance",  label: "Attendance",  emoji: "✅" },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const [faculty, setFaculty] = useState<{ name: string } | null>(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const f = localStorage.getItem("faculty");
     if (f) setFaculty(JSON.parse(f));
   }, []);
 
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Prevent body scroll when sidebar is open on mobile
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
   const initials = faculty?.name
     ? faculty.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
     : "FA";
 
-  return (
+  const sidebarContent = (
     <aside className="w-[240px] min-w-[240px] min-h-screen bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
 
       {/* ── Logo ── */}
@@ -97,5 +109,55 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* ── Desktop: always visible ── */}
+      <div className="hidden lg:flex">
+        {sidebarContent}
+      </div>
+
+      {/* ── Mobile: hamburger button ── */}
+      <button
+        onClick={() => setOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white border border-gray-200 rounded-xl shadow-md flex items-center justify-center"
+        aria-label="Open menu"
+      >
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+            d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+      {/* ── Mobile: backdrop ── */}
+      {open && (
+        <div
+          className="lg:hidden fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      {/* ── Mobile: slide-in drawer ── */}
+      <div
+        className={`lg:hidden fixed top-0 left-0 z-50 h-full transform transition-transform duration-300 ease-in-out
+          ${open ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        {/* Close button inside drawer */}
+        <div className="relative">
+          <button
+            onClick={() => setOpen(false)}
+            className="absolute top-4 right-[-48px] w-10 h-10 bg-white border border-gray-200 rounded-xl shadow-md flex items-center justify-center z-10"
+            aria-label="Close menu"
+          >
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5}
+                d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          {sidebarContent}
+        </div>
+      </div>
+    </>
   );
 }
