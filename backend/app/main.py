@@ -23,7 +23,10 @@ app = FastAPI(title="Knowletive API", version="1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://YOUR-APP-NAME.vercel.app",  # update after Vercel deploy
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
