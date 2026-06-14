@@ -418,7 +418,7 @@ export default function AttendancePage() {
                           key={i}
                           title={r.date}
                           className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold text-white
-                            ${STATUS_CONFIG[r.status as Status]?.bg ?? "bg-gray-300"}`}
+                            ${STATUS_CONFIG[r.status as keyof typeof STATUS_CONFIG]?.bg ?? "bg-gray-300"}`}
                         >
                           {r.status}
                         </span>
