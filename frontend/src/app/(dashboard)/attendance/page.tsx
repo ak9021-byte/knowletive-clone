@@ -249,7 +249,7 @@ export default function AttendancePage() {
             <div>
               <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Mark All As</p>
               <div className="flex gap-2">
-                {(["P", "HD", "A", "H"] as Status[]).map(s => (
+                {(["P", "HD", "A", "H"] as const).map(s => (
                   <button
                     key={s}
                     onClick={() => markAll(s)}
@@ -307,7 +307,7 @@ export default function AttendancePage() {
 
                   {/* P / HD / A / H buttons */}
                   <div className="flex items-center gap-2">
-                    {(["P", "HD", "A", "H"] as Status[]).map(st => (
+                    {(["P", "HD", "A", "H"] as const).map(s => (
                       <button
                         key={st}
                         onClick={() => setStatus(s.id, st)}
