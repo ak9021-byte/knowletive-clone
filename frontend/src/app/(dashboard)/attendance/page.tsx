@@ -299,7 +299,7 @@ export default function AttendancePage() {
                       <p className="text-sm font-semibold text-gray-800">{s.name}</p>
                       <p className="text-xs text-gray-400">
                         {s.status
-                          ? `Marked: ${STATUS_CONFIG[s.status].full}`
+                          ? `Marked: ${STATUS_CONFIG[s.status as keyof typeof STATUS_CONFIG]?.full}`
                           : "Not marked yet"}
                       </p>
                     </div>
@@ -307,7 +307,7 @@ export default function AttendancePage() {
 
                   {/* P / HD / A / H buttons */}
                   <div className="flex items-center gap-2">
-                    {(["P", "HD", "A", "H"] as const).map(s => (
+                    {(["P", "HD", "A", "H"] as const).map(st => (
                       <button
                         key={st}
                         onClick={() => setStatus(s.id, st)}
