@@ -126,7 +126,7 @@ export default function LoginPage() {
 
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <div className="w-26 h-26 mx-auto rounded-2xl flex items-center justify-center mb-4 shadow-lg"
+            <div className="w-24 h-24 mx-auto rounded-2xl flex items-center justify-center mb-4 shadow-lg overflow-hidden"
               style={{ background: "linear-gradient(135deg,#6366f1,#a855f7)" }}>
               <img src="/logo.png" alt="Knowletive" className="w-full h-full object-contain p-1" />
             </div>
