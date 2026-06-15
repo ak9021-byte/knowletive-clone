@@ -126,9 +126,9 @@ export default function LoginPage() {
 
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-4 shadow-lg"
+            <div className="w-26 h-26 mx-auto rounded-2xl flex items-center justify-center mb-4 shadow-lg"
               style={{ background: "linear-gradient(135deg,#6366f1,#a855f7)" }}>
-              <img src="/logo.png" alt="Knowletive" className="w-full h-full object-contain p-2" />
+              <img src="/logo.png" alt="Knowletive" className="w-full h-full object-contain p-1" />
             </div>
             <h2 className="text-2xl font-bold text-gray-800">Welcome Back</h2>
             <p className="text-gray-500 text-sm mt-1">Sign in to continue your journey</p>
